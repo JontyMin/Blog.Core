@@ -14,6 +14,12 @@ namespace Blog.Core
 {
     public class Startup
     {
+        /*
+         * Startup项目的启动文件
+         * 所有启动相关都在这里配置
+         * 包括依赖注入、跨域请求、Redis缓存等
+         */
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -21,13 +27,16 @@ namespace Blog.Core
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// 注册服务
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            // 如果是MVC项目可以使用AddControllersWithViews
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
