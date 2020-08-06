@@ -1,5 +1,6 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -9,16 +10,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace Blog.Core
 {
     public class Startup
     {
         /*
-         * StartupÏîÄ¿µÄÆô¶¯ÎÄ¼ş
-         * ËùÓĞÆô¶¯Ïà¹Ø¶¼ÔÚÕâÀïÅäÖÃ
-         * °üÀ¨ÒÀÀµ×¢Èë¡¢¿çÓòÇëÇó¡¢Redis»º´æµÈ
+         * Startupé¡¹ç›®çš„å¯åŠ¨æ–‡ä»¶
+         * æ‰€æœ‰å¯åŠ¨ç›¸å…³éƒ½åœ¨è¿™é‡Œé…ç½®
+         * åŒ…æ‹¬ä¾èµ–æ³¨å…¥ã€è·¨åŸŸè¯·æ±‚ã€Redisç¼“å­˜ç­‰
          */
+
+        /// <summary>
+        /// æ¥å£å
+        /// </summary>
+        public string ApiName { get; set; } = "Blog.Core";
 
         public Startup(IConfiguration configuration)
         {
@@ -28,13 +35,52 @@ namespace Blog.Core
         public IConfiguration Configuration { get; }
 
         /// <summary>
-        /// ×¢²á·şÎñ
+        /// æ³¨å†ŒæœåŠ¡
         /// </summary>
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Èç¹ûÊÇMVCÏîÄ¿¿ÉÒÔÊ¹ÓÃAddControllersWithViews
+            // å¦‚æœæ˜¯MVCé¡¹ç›®å¯ä»¥ä½¿ç”¨AddControllersWithViews
             services.AddControllers();
+
+
+            // æ³¨å†ŒSwaggeræœåŠ¡
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+
+                    Title = $"{ApiName}æ¥å£æ–‡æ¡£-NETCore 3.1",
+
+                    Description = $"{ApiName}  HTTP API V1",
+
+                    Contact = new OpenApiContact
+                    {
+                        Name = ApiName,
+                        Email = "JontyMin@qq.com",
+                        Url = new Uri("https://www.jonty.top")
+                    },
+
+                    License = new OpenApiLicense
+                    {
+                        Name = ApiName,
+                        Url = new Uri("https://www.jonty.top")
+                    }
+                });
+
+                /*
+                 * å¦‚æœæƒ³è¦å»é™¤âš ï¼Œå¯ä»¥åœ¨é¡¹ç›®ç”Ÿæˆ=>å–æ¶ˆé¡¹ç›®è­¦å‘Š+1591
+                 */
+                
+                // xmlæ–‡æ¡£åœ°å€
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, "Blog.Core.xml");
+
+                // ç¬¬äºŒä¸ªå‚æ•°ä¸ºæ§åˆ¶å™¨æ³¨é‡Šï¼Œé»˜è®¤false
+                options.IncludeXmlComments(xmlPath,true);
+
+                options.OrderActionsBy(x => x.RelativePath);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -43,6 +89,18 @@ namespace Blog.Core
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // å¯åŠ¨swaggerä¸­é—´ä»¶
+            app.UseSwagger();
+
+            app.UseSwaggerUI(x =>
+            {
+                x.SwaggerEndpoint($"/swagger/v1/swagger.json", $"{ApiName} V1");
+                
+                // é»˜è®¤æ ¹åŸŸåæ‰“å¼€
+                x.RoutePrefix = "";
+
+            });
 
             app.UseRouting();
 

@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Blog.Core.Controllers
 {
+    /// <summary>
+    /// 天气测试
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -23,6 +26,10 @@ namespace Blog.Core.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// 获取天气数据
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
