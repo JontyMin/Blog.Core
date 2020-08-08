@@ -43,6 +43,7 @@ namespace Blog.Core
             // 如果是MVC项目可以使用AddControllersWithViews
             services.AddControllers();
 
+            #region 注册Swagger服务
 
             // 注册Swagger服务
             services.AddSwaggerGen(options =>
@@ -79,8 +80,13 @@ namespace Blog.Core
                 // 第二个参数为控制器注释，默认false
                 options.IncludeXmlComments(xmlPath,true);
 
+                var xmlModelPath = Path.Combine(AppContext.BaseDirectory, "Blog.Core.Model.xml");
+                options.IncludeXmlComments(xmlModelPath);
+
                 options.OrderActionsBy(x => x.RelativePath);
             });
+
+            #endregion
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

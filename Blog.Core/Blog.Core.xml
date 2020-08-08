@@ -15,6 +15,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Blog.Core.Controllers.WeatherForecastController.Post(Blog.Core.Model.Love)">
+            <summary>
+            post
+            </summary>
+            <param name="love"></param>
+        </member>
         <member name="M:Blog.Core.Program.CreateHostBuilder(System.String[])">
             <summary>
             创建IHostBuilder
